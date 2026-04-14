@@ -427,6 +427,15 @@ def admin_all_students():
         ).fetchall()
     return jsonify({"ok": True, "students": [dict(r) for r in rows]})
 
+from flask import send_from_directory
+
+@app.route("/")
+def index():
+    return send_from_directory(".", "index.html")
+
+@app.route("/<path:filename>")
+def static_files(filename):
+    return send_from_directory(".", filename)
 # -----------------------------------------
 # RUN
 # -----------------------------------------
