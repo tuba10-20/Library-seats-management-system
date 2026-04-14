@@ -1,5 +1,5 @@
 // ── CONFIG ──
-const BOOKING_API = "REPLACE_WITH_YOUR_BACKEND_URL/api";
+const BOOKING_API = "https://library-seats-management-system.onrender.com";
 
 // ── AUTH HELPERS ──
 function getUser()  { try { return JSON.parse(localStorage.getItem("libraryUser")); } catch { return null; } }
