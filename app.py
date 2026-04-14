@@ -437,6 +437,7 @@ def index():
 @app.route("/<path:filename>")
 def static_files(filename):
     return send_from_directory(".", filename)
+init_db() 
 # -----------------------------------------
 # RUN
 # -----------------------------------------
