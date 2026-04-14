@@ -73,7 +73,7 @@ async function syncSeatsFromServer() {
     // Also restore myBooking from ALL floors (not just current)
     if (!state.myBooking && user) {
       try {
-        const r2   = await fetch(`${BOOKING_API}/my-bookings`, {
+        const r2   = await fetch(`${BOOKING_API}/api/my-bookings`, {
           credentials: "include",
           headers: { "Authorization": `Bearer ${getToken()}` }
         });

@@ -385,7 +385,7 @@
     // ── LOGOUT ──
     async function doLogout() {
       try {
-        await fetch(`${ADMIN_API}/admin/logout`, {
+        await fetch(`${ADMIN_API}/api/admin/logout`, {
           method: "POST", credentials: "include",
           headers: adminHeaders()
         });

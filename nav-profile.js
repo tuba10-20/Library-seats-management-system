@@ -2,7 +2,7 @@
    nav-profile.js  —  include at bottom of every page
    ═══════════════════════════════════════════════════ */
 
-const NAV_API = "REPLACE_WITH_YOUR_BACKEND_URL/api";
+const NAV_API = "https://library-seats-management-system.onrender.com";
 
 // ── User helpers ──
 function getUser()  { try { return JSON.parse(localStorage.getItem("libraryUser")); } catch { return null; } }

@@ -151,7 +151,7 @@
             btn.textContent = "Signing in...";
 
             try {
-                const res  = await fetch(`${LOGIN_API}/login`, {
+                const res  = await fetch(`${LOGIN_API}/api/login`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     credentials: "include",
