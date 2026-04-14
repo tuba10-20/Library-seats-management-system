@@ -21,6 +21,7 @@ _dev_origins = [
     "http://localhost:5501", "http://127.0.0.1:5501",
     "http://localhost:5502", "http://127.0.0.1:5502",
     "http://localhost:3000", "http://127.0.0.1:3000",
+    "https://library-seats-management-system.onrender.com",
     "null"
 ]
 CORS(app, supports_credentials=True, origins=_prod_origins + _dev_origins)
