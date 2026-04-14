@@ -1,5 +1,5 @@
 // ── CONFIG ──
-const BOOKING_API = "https://library-seats-management-system.onrender.com";
+const BOOKING_API = "https://library-seats-management-system.onrender.com/api";
 
 // ── AUTH HELPERS ──
 function getUser()  { try { return JSON.parse(localStorage.getItem("libraryUser")); } catch { return null; } }
@@ -73,7 +73,7 @@ async function syncSeatsFromServer() {
     // Also restore myBooking from ALL floors (not just current)
     if (!state.myBooking && user) {
       try {
-        const r2   = await fetch(`${BOOKING_API}/api/my-bookings`, {
+        const r2   = await fetch(`${BOOKING_API}/my-bookings`, {
           credentials: "include",
           headers: { "Authorization": `Bearer ${getToken()}` }
         });
@@ -338,7 +338,7 @@ async function bookSeat() {
       headers: authHeaders(),
       credentials: "include",
       body: JSON.stringify({ seat_id: id, floor: state.floor, duration_minutes: dur }),
-      signal: AbortSignal.timeout(4000)
+      signal: AbortSignal.timeout(8000)
     });
     const data = await res.json();
 
@@ -455,7 +455,7 @@ async function confirmCancel() {
       headers: authHeaders(),
       credentials: "include",
       body: JSON.stringify({ seat_id: id }),
-      signal: AbortSignal.timeout(4000)
+      signal: AbortSignal.timeout(8000)
     });
     const data = await res.json();
     if (!data.ok) { showToast(data.error || "Cancel failed.", "error"); closeModal(); return; }
