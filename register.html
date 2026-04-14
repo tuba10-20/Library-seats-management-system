@@ -165,7 +165,7 @@
             btn.textContent = "Creating account...";
 
             try {
-                const res  = await fetch(`${REG_API}/register`, {
+                const res  = await fetch(`${REG_API}/api/register`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     credentials: "include",
