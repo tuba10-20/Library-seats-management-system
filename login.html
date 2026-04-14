@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login — Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh;
+            background:
+                linear-gradient(135deg, rgba(3,4,94,0.72) 0%, rgba(2,62,138,0.65) 50%, rgba(0,119,182,0.60) 100%),
+                url('images/rit_lib.jpeg') center center / cover no-repeat fixed;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'DM Sans', sans-serif;
+            padding: 20px;
+        }
+        .card {
+            background: rgba(0, 150, 199, 0.88);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            padding: 48px 40px 40px;
+            border-radius: 22px;
+            box-shadow: 0 24px 64px rgba(3, 61, 138, 0.5);
+            display: flex; flex-direction: column; align-items: center;
+            width: 100%; max-width: 360px;
+            border: 1px solid rgba(255,255,255,0.22);
+        }
+        .logo { font-size: 38px; margin-bottom: 8px; }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: #caf0f8; font-size: 26px; margin-bottom: 6px;
+        }
+        .sub { font-size: 13px; color: rgba(202,240,248,0.7); margin-bottom: 30px; }
+        .input-group { width: 100%; margin-bottom: 14px; }
+        .input-group label {
+            display: block; font-size: 11px; font-weight: 500;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            color: rgba(202,240,248,0.75); margin-bottom: 6px;
+        }
+        .input-group input {
+            width: 100%; padding: 12px 14px;
+            border: 1.5px solid rgba(202,240,248,0.25);
+            border-radius: 10px;
+            background: rgba(202,240,248,0.12);
+            color: #fff; font-size: 14px;
+            font-family: 'DM Sans', sans-serif;
+            outline: none; transition: border-color 0.2s, background 0.2s;
+        }
+        .input-group input::placeholder { color: rgba(202,240,248,0.4); }
+        .input-group input:focus { border-color: #48cae4; background: rgba(202,240,248,0.2); }
+        .input-group input.error { border-color: #ff8fa3; }
+        .error-msg {
+            color: #ffb3c1; font-size: 13px;
+            min-height: 18px; margin: 0 0 12px;
+            text-align: center; width: 100%;
+        }
+        .btn {
+            width: 100%; padding: 13px; border-radius: 10px;
+            font-size: 14px; font-weight: 700;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer; transition: all 0.2s;
+            letter-spacing: 0.4px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #caf0f8, #90e0ef);
+            color: #03045e; border: none;
+            box-shadow: 0 4px 18px rgba(3,61,138,0.28);
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #fff, #caf0f8);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(3,61,138,0.38);
+        }
+        .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+        .divider {
+            width: 100%; display: flex; align-items: center;
+            gap: 10px; margin: 16px 0;
+        }
+        .divider::before, .divider::after {
+            content: ''; flex: 1; height: 1px;
+            background: rgba(202,240,248,0.2);
+        }
+        .divider span { font-size: 12px; color: rgba(202,240,248,0.5); white-space: nowrap; }
+        .register-link {
+            text-align: center; font-size: 13px;
+            color: rgba(202,240,248,0.7); width: 100%;
+        }
+        .register-link a { color: #caf0f8; font-weight: 600; text-decoration: none; }
+        .register-link a:hover { text-decoration: underline; }
+        .admin-link {
+            margin-top: 16px; text-align: center;
+            font-size: 12px; color: rgba(202,240,248,0.45); width: 100%;
+        }
+        .admin-link a { color: rgba(202,240,248,0.6); text-decoration: none; }
+        .admin-link a:hover { color: #caf0f8; }
+        @media (max-width: 400px) { .card { padding: 36px 22px 32px; } }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="logo">📚</div>
+        <h1>Welcome Back</h1>
+        <p class="sub">Sign in to book your seat</p>
+
+        <div class="input-group">
+            <label for="prn">PRN Number</label>
+            <input type="text" id="prn" placeholder="7-digit PRN" maxlength="7" autocomplete="username" />
+        </div>
+        <div class="input-group">
+            <label for="pass">Password</label>
+            <input type="password" id="pass" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+
+        <div class="error-msg" id="error-msg"></div>
+        <button class="btn btn-primary" id="login-btn" onclick="handleLogin()">LOGIN</button>
+
+        <div class="divider"><span>New student?</span></div>
+        <div class="register-link">
+            Don't have an account? <a href="register.html">Create one here →</a>
+        </div>
+        <div class="admin-link">
+            Faculty / Staff? <a href="admin-login.html">Admin portal →</a>
+        </div>
+    </div>
+
+    <script>
+        const LOGIN_API = "REPLACE_WITH_YOUR_BACKEND_URL/api";
+
+        function saveAndGo(user, token) {
+            localStorage.setItem("libraryUser", JSON.stringify(user));
+            if (token) localStorage.setItem("authToken", token);
+            window.location.href = "index.html";
+        }
+
+        async function handleLogin() {
+            const prn  = document.getElementById("prn").value.trim();
+            const pass = document.getElementById("pass").value;
+            const err  = document.getElementById("error-msg");
+            const btn  = document.getElementById("login-btn");
+
+            ["prn","pass"].forEach(id => document.getElementById(id).classList.remove("error"));
+            err.textContent = "";
+
+            if (!prn) { err.textContent = "Please enter your PRN."; document.getElementById("prn").classList.add("error"); return; }
+            if (prn.length < 7) { err.textContent = "PRN must be 7 digits."; document.getElementById("prn").classList.add("error"); return; }
+            if (!pass) { err.textContent = "Please enter your password."; document.getElementById("pass").classList.add("error"); return; }
+
+            btn.disabled    = true;
+            btn.textContent = "Signing in...";
+
+            try {
+                const res  = await fetch(`${LOGIN_API}/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ prn, password: pass }),
+                    signal: AbortSignal.timeout(5000)
+                });
+                const data = await res.json();
+
+                if (data.ok) {
+                    saveAndGo(data.user, data.token);
+                } else {
+                    err.textContent = data.error || "Login failed.";
+                    if (data.error && data.error.includes("register")) {
+                        err.textContent += " → Click 'Create one here' below.";
+                    }
+                    document.getElementById("pass").classList.add("error");
+                }
+            } catch (_) {
+                err.textContent = "Cannot reach server. Make sure the backend is running.";
+            }
+
+            btn.disabled    = false;
+            btn.textContent = "LOGIN";
+        }
+
+        document.addEventListener("keydown", e => { if (e.key === "Enter") handleLogin(); });
+        // If already logged in, redirect to home
+        if (localStorage.getItem("libraryUser")) window.location.href = "index.html";
+    </script>
+</body>
+</html>

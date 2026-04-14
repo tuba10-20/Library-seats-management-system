@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# Database (don't commit your local DB)
+*.db
+*.sqlite3
+
+# Environment variables (NEVER commit this)
+.env
+
+# OS
+.DS_Store
+Thumbs.db

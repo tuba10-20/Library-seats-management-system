@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login — Library</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #03045e 0%, #023e8a 50%, #0077b6 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Sans', sans-serif;
+      padding: 20px;
+    }
+    .card {
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 22px;
+      padding: 52px 44px 44px;
+      width: 100%; max-width: 380px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .badge {
+      background: rgba(72,202,228,0.15);
+      border: 1px solid rgba(72,202,228,0.3);
+      color: #48cae4; font-size: 11px; font-weight: 500;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      color: #fff; font-size: 26px;
+      margin-bottom: 6px; text-align: center;
+    }
+    .sub {
+      font-size: 13px; color: rgba(255,255,255,0.5);
+      margin-bottom: 34px; text-align: center;
+    }
+    .input-group { width: 100%; margin-bottom: 16px; }
+    .input-group label {
+      display: block; font-size: 11px; font-weight: 500;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); margin-bottom: 6px;
+    }
+    .input-group input {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.08);
+      color: #fff; font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .input-group input::placeholder { color: rgba(255,255,255,0.25); }
+    .input-group input:focus {
+      border-color: #48cae4;
+      background: rgba(255,255,255,0.12);
+    }
+    .input-group input.error { border-color: #e63946; }
+    .error-msg {
+      color: #ff8fa3; font-size: 13px;
+      min-height: 18px; margin: 0 0 12px;
+      text-align: center; width: 100%;
+    }
+    .login-btn {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, #48cae4, #0096c7);
+      color: #03045e; border: none; border-radius: 10px;
+      font-size: 14px; font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer; letter-spacing: 0.5px;
+      box-shadow: 0 4px 20px rgba(72,202,228,0.3);
+      transition: all 0.2s;
+    }
+    .login-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 28px rgba(72,202,228,0.4);
+    }
+    .login-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .back-link {
+      margin-top: 22px; font-size: 13px;
+      color: rgba(255,255,255,0.4); text-align: center;
+    }
+    .back-link a { color: #48cae4; text-decoration: none; }
+    .back-link a:hover { text-decoration: underline; }
+    @media (max-width: 420px) { .card { padding: 36px 24px 32px; } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="badge">Faculty / Admin</div>
+    <h1>Admin Portal</h1>
+    <p class="sub">RIT Central Library — Staff Access</p>
+
+    <div class="input-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter username" autocomplete="username" />
+    </div>
+    <div class="input-group">
+      <label for="pass">Password</label>
+      <input type="password" id="pass" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+
+    <div class="error-msg" id="error-msg"></div>
+    <button class="login-btn" id="login-btn" onclick="handleLogin()">SIGN IN</button>
+    <p class="back-link">Student? <a href="login.html">Login here</a></p>
+  </div>
+
+  <script>
+    const ADMIN_LOGIN_API = "REPLACE_WITH_YOUR_BACKEND_URL/api";
+
+    async function handleLogin() {
+      const username = document.getElementById("username").value.trim();
+      const pass     = document.getElementById("pass").value;
+      const err      = document.getElementById("error-msg");
+      const btn      = document.getElementById("login-btn");
+
+      ["username","pass"].forEach(id => document.getElementById(id).classList.remove("error"));
+      err.textContent = "";
+
+      if (!username) {
+        err.textContent = "Please enter your username.";
+        document.getElementById("username").classList.add("error");
+        return;
+      }
+      if (!pass) {
+        err.textContent = "Please enter your password.";
+        document.getElementById("pass").classList.add("error");
+        return;
+      }
+
+      btn.disabled    = true;
+      btn.textContent = "Signing in...";
+
+      try {
+        const res  = await fetch(`${ADMIN_LOGIN_API}/admin/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ username, password: pass }),
+          signal: AbortSignal.timeout(4000)
+        });
+        const data = await res.json();
+
+        if (data.ok) {
+          localStorage.setItem("adminUser",  JSON.stringify(data.admin));
+          localStorage.setItem("adminToken", data.token || "");
+          window.location.href = "admin.html";
+        } else {
+          err.textContent = data.error || "Invalid credentials.";
+          document.getElementById("pass").classList.add("error");
+        }
+      } catch (_) {
+        err.textContent = "Cannot reach server. Make sure the backend is running.";
+      }
+
+      btn.disabled    = false;
+      btn.textContent = "SIGN IN";
+    }
+
+    document.addEventListener("keydown", e => { if (e.key === "Enter") handleLogin(); });
+    // Already logged in as admin?
+    if (localStorage.getItem("adminUser")) window.location.href = "admin.html";
+  </script>
+</body>
+</html>

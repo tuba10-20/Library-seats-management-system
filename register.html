@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account — Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #03045e 0%, #023e8a 50%, #0077b6 100%);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'DM Sans', sans-serif;
+            padding: 20px;
+        }
+        .card {
+            background: rgba(0, 119, 182, 0.85);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            padding: 48px 40px 40px;
+            border-radius: 22px;
+            box-shadow: 0 24px 64px rgba(3, 61, 138, 0.5);
+            display: flex; flex-direction: column; align-items: center;
+            width: 100%; max-width: 380px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .logo { font-size: 36px; margin-bottom: 8px; }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: #caf0f8; font-size: 24px; margin-bottom: 4px;
+        }
+        .sub { font-size: 13px; color: rgba(202,240,248,0.65); margin-bottom: 28px; text-align: center; }
+        .input-group { width: 100%; margin-bottom: 14px; }
+        .input-group label {
+            display: block; font-size: 11px; font-weight: 500;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            color: rgba(202,240,248,0.75); margin-bottom: 6px;
+        }
+        .input-group input {
+            width: 100%; padding: 12px 14px;
+            border: 1.5px solid rgba(202,240,248,0.22);
+            border-radius: 10px;
+            background: rgba(202,240,248,0.1);
+            color: #fff; font-size: 14px;
+            font-family: 'DM Sans', sans-serif;
+            outline: none; transition: border-color 0.2s, background 0.2s;
+        }
+        .input-group input::placeholder { color: rgba(202,240,248,0.35); }
+        .input-group input:focus { border-color: #48cae4; background: rgba(202,240,248,0.18); }
+        .input-group input.error { border-color: #ff8fa3; }
+        .input-hint { font-size: 11px; color: rgba(202,240,248,0.45); margin-top: 4px; }
+        .error-msg {
+            color: #ffb3c1; font-size: 13px;
+            min-height: 18px; margin: 0 0 12px;
+            text-align: center; width: 100%;
+        }
+        .success-msg {
+            color: #b7f0d4; font-size: 13px;
+            margin: 0 0 12px; text-align: center; width: 100%;
+        }
+        .btn {
+            width: 100%; padding: 13px; border-radius: 10px;
+            font-size: 14px; font-weight: 700;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer; transition: all 0.2s; border: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #caf0f8, #90e0ef);
+            color: #03045e;
+            box-shadow: 0 4px 18px rgba(3,61,138,0.28);
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #fff, #caf0f8);
+            transform: translateY(-1px);
+        }
+        .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+        .login-link {
+            margin-top: 18px; text-align: center;
+            font-size: 13px; color: rgba(202,240,248,0.65); width: 100%;
+        }
+        .login-link a { color: #caf0f8; font-weight: 600; text-decoration: none; }
+        .login-link a:hover { text-decoration: underline; }
+        @media (max-width: 400px) { .card { padding: 36px 22px 32px; } }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="logo">📚</div>
+        <h1>Create Account</h1>
+        <p class="sub">Register with your PRN to book library seats</p>
+
+        <div class="input-group">
+            <label for="prn">PRN Number</label>
+            <input type="text" id="prn" placeholder="7-digit PRN" maxlength="7" autocomplete="off" />
+            <div class="input-hint">Your 7-digit college PRN</div>
+        </div>
+        <div class="input-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="e.g. Aarav Sharma" autocomplete="name" />
+        </div>
+        <div class="input-group">
+            <label for="email">Email (optional)</label>
+            <input type="email" id="email" placeholder="prn@rit.edu" autocomplete="email" />
+            <div class="input-hint">Leave blank to use PRN@rit.edu</div>
+        </div>
+        <div class="input-group">
+            <label for="pass">Password</label>
+            <input type="password" id="pass" placeholder="Min. 6 characters" autocomplete="new-password" />
+        </div>
+        <div class="input-group">
+            <label for="pass2">Confirm Password</label>
+            <input type="password" id="pass2" placeholder="Re-enter password" autocomplete="new-password" />
+        </div>
+
+        <div class="error-msg"   id="error-msg"></div>
+        <div class="success-msg" id="success-msg"></div>
+
+        <button class="btn btn-primary" id="reg-btn" onclick="handleRegister()">CREATE ACCOUNT</button>
+
+        <div class="login-link">
+            Already have an account? <a href="login.html">Sign in →</a>
+        </div>
+    </div>
+
+    <script>
+        const REG_API = "REPLACE_WITH_YOUR_BACKEND_URL/api";
+
+        async function handleRegister() {
+            const prn   = document.getElementById("prn").value.trim();
+            const name  = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const pass  = document.getElementById("pass").value;
+            const pass2 = document.getElementById("pass2").value;
+            const err   = document.getElementById("error-msg");
+            const succ  = document.getElementById("success-msg");
+            const btn   = document.getElementById("reg-btn");
+
+            ["prn","name","pass","pass2"].forEach(id => document.getElementById(id).classList.remove("error"));
+            err.textContent  = "";
+            succ.textContent = "";
+
+            if (!prn || prn.length !== 7 || !/^\d+$/.test(prn)) {
+                err.textContent = "PRN must be exactly 7 digits.";
+                document.getElementById("prn").classList.add("error");
+                return;
+            }
+            if (!name) {
+                err.textContent = "Please enter your full name.";
+                document.getElementById("name").classList.add("error");
+                return;
+            }
+            if (!pass || pass.length < 6) {
+                err.textContent = "Password must be at least 6 characters.";
+                document.getElementById("pass").classList.add("error");
+                return;
+            }
+            if (pass !== pass2) {
+                err.textContent = "Passwords do not match.";
+                document.getElementById("pass2").classList.add("error");
+                return;
+            }
+
+            btn.disabled    = true;
+            btn.textContent = "Creating account...";
+
+            try {
+                const res  = await fetch(`${REG_API}/register`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ prn, name, email: email || `${prn}@rit.edu`, password: pass }),
+                    signal: AbortSignal.timeout(5000)
+                });
+                const data = await res.json();
+
+                if (data.ok) {
+                    localStorage.setItem("libraryUser", JSON.stringify(data.user));
+                    if (data.token) localStorage.setItem("authToken", data.token);
+                    succ.textContent = "Account created! Redirecting...";
+                    setTimeout(() => { window.location.href = "index.html"; }, 1000);
+                } else {
+                    err.textContent = data.error || "Registration failed.";
+                }
+            } catch (_) {
+                err.textContent = "Cannot reach server. Make sure the backend is running.";
+            }
+
+            btn.disabled    = false;
+            btn.textContent = "CREATE ACCOUNT";
+        }
+
+        document.addEventListener("keydown", e => { if (e.key === "Enter") handleRegister(); });
+        if (localStorage.getItem("libraryUser")) window.location.href = "index.html";
+    </script>
+</body>
+</html>

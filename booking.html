@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a Seat — Library</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="booking.css" />
+  <link rel="stylesheet" href="nav-profile.css" />
+  <style>
+    body { display: flex; flex-direction: column; min-height: 100vh; }
+    footer {
+      background: rgba(3,4,94,0.92); backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.7); padding: 18px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 14px; font-size: 13px; font-family: 'DM Sans', sans-serif;
+      margin-top: auto;
+    }
+    .footer-left { font-family: 'Playfair Display', serif; color: #48cae4; font-size: 15px; }
+    .footer-center { opacity: 0.6; }
+    .footer-profile { display: flex; align-items: center; gap: 10px; }
+    .profile-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#48cae4,#0077b6); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; text-transform: uppercase; }
+    .profile-name { color: #caf0f8; font-weight: 500; }
+    .profile-role { color: rgba(202,240,248,0.5); font-size: 12px; }
+    .login-prompt a { color: #48cae4; text-decoration: none; font-weight: 500; }
+    @media (max-width: 480px) {
+      .page-hero { padding: 24px 16px 14px; }
+      .page-hero h1 { font-size: 26px; }
+      .controls-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .legend { gap: 8px; }
+      .form-row { flex-direction: column; }
+      .book-btn { width: 100%; }
+      .field { min-width: unset; width: 100%; }
+      footer { flex-direction: column; align-items: flex-start; gap: 10px; }
+      footer .footer-center { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav>
+    <a class="logo-wrap" href="index.html">
+      <div class="logo-icon">📚</div>
+      <span class="logo-text">Li<span>brary</span></span>
+    </a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="aboutUs.html">About Us</a></li>
+      <li><a href="booking.html" class="cta">Book a Seat</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-hero">
+    <h1>Book your<br><em>perfect seat.</em></h1>
+    <p>Pick a spot, set your duration, and we'll hold it for you.</p>
+  </div>
+
+  <div class="main-card" style="flex:1;">
+    <div class="controls-row">
+      <div class="floor-toggle">
+        <button class="floor-btn active" onclick="switchFloor(1)">
+          <span class="floor-label">Floor 1</span>
+        </button>
+        <button class="floor-btn" onclick="switchFloor(2)">
+          <span class="floor-label">Floor 2</span>
+        </button>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot dot-available"></div> available</div>
+        <div class="legend-item"><div class="legend-dot dot-selected"></div> selected</div>
+        <div class="legend-item"><div class="legend-dot dot-booked"></div> booked</div>
+        <div class="legend-item"><div class="legend-dot dot-unavailable"></div> unavailable</div>
+      </div>
+    </div>
+
+    <div class="floor-badge" id="floor-badge">Floor 1</div>
+
+    <div class="hall-outer">
+      <div class="hall-wrap" id="hall-wrap">
+        <div class="hall" id="hall"></div>
+      </div>
+    </div>
+
+    <div class="booking-panel">
+      <div class="panel-title">confirm your booking</div>
+      <div class="selected-info" id="sel-info">no seat selected — click one above</div>
+      <div class="form-row">
+        <div class="field">
+          <label>stay duration</label>
+          <div class="duration-row">
+            <select id="dur-select" onchange="handleDurChange()">
+              <option value="30">30 minutes</option>
+              <option value="60" selected>1 hour</option>
+              <option value="90">1.5 hours</option>
+              <option value="120">2 hours</option>
+              <option value="180">3 hours</option>
+              <option value="custom">custom...</option>
+            </select>
+            <div class="custom-dur" id="custom-dur-wrap">
+              <input type="number" id="custom-minutes" min="1" max="480" placeholder="mins" />
+              <span class="custom-label">min</span>
+            </div>
+          </div>
+        </div>
+        <button class="book-btn" id="book-btn" disabled onclick="bookSeat()">confirm booking</button>
+      </div>
+    </div>
+
+    <div class="active-panel" id="active-panel">
+      <div class="active-header">your active bookings</div>
+      <div class="booking-list" id="booking-list"></div>
+    </div>
+  </div>
+
+  <!-- Cancel modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="modal-icon">🪑</div>
+      <div class="modal-title">cancel this booking?</div>
+      <div class="modal-sub">seat <span id="modal-seat-id"></span> will be freed immediately.</div>
+      <div class="modal-btns">
+        <button class="modal-keep" onclick="closeModal()">keep it</button>
+        <button class="modal-cancel-confirm" onclick="confirmCancel()">yes, cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">📚 Library</div>
+    <div class="footer-center">© 2026 RIT Central Library, Islampur.</div>
+    <div id="footer-user"></div>
+  </footer>
+
+  <!-- Load booking.js BEFORE nav-profile.js to avoid API constant conflicts -->
+  <script src="booking.js"></script>
+  <script src="nav-profile.js"></script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>About Us — Library</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="nav-profile.css" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            width: 100%; min-height: 100vh;
+            background: linear-gradient(135deg, #caf0f8 0%, #90e0ef 50%, #48cae4 100%);
+            font-family: 'DM Sans', sans-serif;
+            display: flex; flex-direction: column;
+        }
+        nav {
+            width: 100%; display: flex; align-items: center;
+            justify-content: space-between; padding: 0 32px; height: 52px;
+            background: rgba(3, 4, 94, 0.92); backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 2px 20px rgba(3, 4, 94, 0.35);
+        }
+        .logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; cursor: pointer; flex-shrink: 0; }
+        .logo-icon {
+            width: 28px; height: 28px;
+            background: linear-gradient(135deg, #48cae4, #90e0ef);
+            border-radius: 6px; display: flex; align-items: center;
+            justify-content: center; font-size: 15px; transition: transform 0.3s ease;
+        }
+        .logo-wrap:hover .logo-icon { transform: rotate(-8deg) scale(1.1); }
+        .logo-text { font-family: 'Playfair Display', serif; font-size: 18px; color: #fff; letter-spacing: 0.5px; }
+        .logo-text span { color: #48cae4; }
+        nav ul { list-style: none; display: flex; align-items: center; gap: 4px; }
+        nav ul li a {
+            display: inline-block; text-decoration: none;
+            color: rgba(255,255,255,0.75); font-family: 'DM Sans', sans-serif;
+            font-size: 13.5px; font-weight: 400; letter-spacing: 0.4px;
+            padding: 6px 16px; border-radius: 20px; transition: all 0.25s ease;
+        }
+        nav ul li a:hover { color: #fff; background: rgba(72,202,228,0.18); }
+        nav ul li a.cta { color: #03045e; background: linear-gradient(135deg, #48cae4, #90e0ef); font-weight: 500; padding: 6px 18px; }
+        nav ul li a.cta:hover { background: linear-gradient(135deg, #90e0ef, #caf0f8); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(72,202,228,0.45); }
+        .page-hero {
+            text-align: center; padding: 72px 20px 48px;
+            background:
+                linear-gradient(180deg, rgba(202,240,248,0.82) 0%, rgba(144,224,239,0.78) 100%),
+                url('images/rit_lib.jpeg') center 40% / cover no-repeat;
+            position: relative;
+        }
+        .page-hero .eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 2.5px; text-transform: uppercase; color: #0077b6; opacity: 0.7; margin-bottom: 12px; }
+        .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4.5vw, 48px); color: #03045e; line-height: 1.15; margin-bottom: 14px; }
+        .page-hero h1 em { font-style: italic; color: #0077b6; }
+        .page-hero p { font-size: 14px; color: #023e8a; opacity: 0.8; max-width: 480px; margin: 0 auto; line-height: 1.7; }
+        .content-wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px 80px; display: flex; flex-direction: column; gap: 40px; flex: 1; }
+        .card { background: rgba(255,255,255,0.55); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.7); border-radius: 18px; box-shadow: 0 8px 32px rgba(3, 4, 94, 0.10); overflow: hidden; }
+        .section-label { display: inline-block; background: rgba(3, 4, 94, 0.08); color: #0077b6; font-size: 10.5px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+        .about-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+        .about-intro .text-side { padding: 40px; display: flex; flex-direction: column; justify-content: center; }
+        .about-intro .text-side h2 { font-family: 'Playfair Display', serif; font-size: clamp(20px, 2.5vw, 28px); color: #03045e; margin-bottom: 14px; line-height: 1.3; }
+        .about-intro .text-side p { font-size: 14px; color: #023e8a; opacity: 0.85; line-height: 1.75; margin-bottom: 10px; }
+        .about-intro .img-side { background: linear-gradient(135deg, #03045e 0%, #0096c7 100%); min-height: 280px; display: flex; align-items: center; justify-content: center; font-size: 72px; position: relative; overflow: hidden; }
+        .about-intro .img-side img { width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; inset: 0; }
+        .vm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(3,4,94,0.08); }
+        .vm-block { background: rgba(255,255,255,0.55); backdrop-filter: blur(14px); padding: 36px; }
+        .vm-block:first-child { border-radius: 18px 0 0 18px; }
+        .vm-block:last-child  { border-radius: 0 18px 18px 0; }
+        .vm-block .icon { width: 44px; height: 44px; background: linear-gradient(135deg, #48cae4, #0077b6); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(0,119,182,0.25); }
+        .vm-block h3 { font-family: 'Playfair Display', serif; font-size: 20px; color: #03045e; margin-bottom: 10px; }
+        .vm-block p { font-size: 13.5px; color: #023e8a; opacity: 0.82; line-height: 1.72; }
+        .mission-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+        .mission-list li { font-size: 13.5px; color: #023e8a; opacity: 0.82; line-height: 1.65; padding-left: 14px; position: relative; }
+        .mission-list li::before { content: '→'; position: absolute; left: 0; color: #0077b6; font-size: 12px; }
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgba(3,4,94,0.08); border-radius: 18px; overflow: hidden; box-shadow: 0 8px 32px rgba(3,4,94,0.10); }
+        .stat-box { background: rgba(255,255,255,0.55); backdrop-filter: blur(14px); padding: 30px 20px; text-align: center; }
+        .stat-box .number { font-family: 'Playfair Display', serif; font-size: clamp(22px, 3vw, 36px); color: #03045e; line-height: 1; margin-bottom: 6px; }
+        .stat-box .number span { color: #0077b6; }
+        .stat-box .label { font-size: 12px; color: #023e8a; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; font-weight: 500; }
+        .contact-strip { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; padding: 32px 40px; }
+        .contact-strip .left h3 { font-family: 'Playfair Display', serif; font-size: clamp(18px, 2.5vw, 22px); color: #03045e; margin-bottom: 6px; }
+        .contact-strip .left p { font-size: 13.5px; color: #023e8a; opacity: 0.75; }
+        .contact-items { display: flex; gap: 12px; flex-wrap: wrap; }
+        .contact-chip { display: flex; align-items: center; gap: 8px; background: rgba(3,4,94,0.07); border: none; border-radius: 30px; padding: 8px 18px; font-size: 13px; color: #03045e; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
+        .contact-chip:hover { background: rgba(3,4,94,0.14); }
+        .contact-chip .ci { font-size: 16px; }
+        .info-box { margin-top: 16px; padding: 14px 18px; background: rgba(255,255,255,0.6); border-radius: 12px; line-height: 1.85; width: 100%; font-size: 13.5px; color: #03045e; display: none; }
+        .info-box.visible { display: block; }
+        footer { background: rgba(3, 4, 94, 0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; font-size: 13px; }
+        footer .footer-left { font-family: 'Playfair Display', serif; color: #48cae4; font-size: 15px; }
+        footer .footer-center { opacity: 0.6; }
+        footer .footer-profile { display: flex; align-items: center; gap: 10px; }
+        footer .profile-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #48cae4, #0077b6); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #fff; text-transform: uppercase; }
+        footer .profile-name { color: #caf0f8; font-weight: 500; }
+        footer .profile-role { color: rgba(202,240,248,0.5); font-size: 12px; }
+        footer .login-prompt a { color: #48cae4; text-decoration: none; font-weight: 500; }
+        footer .login-prompt a:hover { text-decoration: underline; }
+        @media (max-width: 700px) {
+            .about-intro { grid-template-columns: 1fr; }
+            .about-intro .img-side { min-height: 180px; }
+            .vm-grid { grid-template-columns: 1fr; }
+            .vm-block:first-child { border-radius: 18px 18px 0 0; }
+            .vm-block:last-child  { border-radius: 0 0 18px 18px; }
+            .stats-row { grid-template-columns: 1fr 1fr; }
+            .contact-strip { flex-direction: column; align-items: flex-start; }
+            footer { flex-direction: column; align-items: flex-start; text-align: left; }
+        }
+        @media (max-width: 480px) {
+            nav { padding: 0 16px; }
+            .content-wrap { padding: 0 14px 60px; }
+            .about-intro .text-side { padding: 24px 20px; }
+            .vm-block { padding: 24px 20px; }
+            .stat-box { padding: 22px 14px; }
+            .contact-strip { padding: 24px 20px; }
+            .page-hero { padding: 32px 16px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav>
+        <a class="logo-wrap" href="index.html">
+            <div class="logo-icon">📚</div>
+            <span class="logo-text">Li<span>brary</span></span>
+        </a>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="aboutUs.html">About Us</a></li>
+            <li><a href="booking.html" class="cta">Book a Seat</a></li>
+        </ul>
+    </nav>
+
+    <!-- PAGE HERO -->
+    <div class="page-hero">
+        <div class="eyebrow">Who we are</div>
+        <h1>About Our <em>Library</em></h1>
+        <p>A knowledge hub built for curious minds — where learning never stops.</p>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content-wrap">
+
+        <!-- 1. INTRO CARD -->
+        <div class="card">
+            <div class="about-intro">
+                <div class="text-side">
+                    <span class="section-label">About Us</span>
+                    <h2>A place built for curious minds</h2>
+                    <p>The RIT Central Library is one of the finest institutional libraries in Western Maharashtra, blending modern architecture with a relaxed, reader-friendly environment. It offers a vast collection of 1,45,118+ volumes, 37,773+ titles, 44,515+ reference books, and 38,572+ e-books across engineering, management, and allied fields. The library also supports competitive exam preparation with resources for GATE, TOEFL, MPSC, and more.</p>
+                    <p>With a total investment of ₹5.84 crores, the library subscribes to 167+ print journals, IEEE ASPP, ScienceDirect, DELNET, and other premium e-journal databases, with an annual subscription investment exceeding ₹20.73 lakhs. Tools like Crossref-Turnitin, Grammarly and Typeset further enhance academic and research quality. Our commitment to excellence has earned us accolades such as the Best Knowledge Resource Center Award (2021) and the Best Library Award (2019) from ISTE, New Delhi.</p>
+                </div>
+                <div class="img-side">
+                    <img src="night_lib.jpg" alt="Library interior" onerror="this.style.display='none'">
+                    📖
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. VISION & MISSION -->
+        <div class="vm-grid card" style="border-radius:18px;">
+            <div class="vm-block">
+                <div class="icon">🔭</div>
+                <h3>Our Vision</h3>
+                <p>To excel in collecting, preserving, and providing access to the best scholarly and educational resources, while delivering high-quality and innovative services.</p>
+            </div>
+            <div class="vm-block">
+                <div class="icon">🎯</div>
+                <h3>Our Mission</h3>
+                <ul class="mission-list">
+                    <li>Provide quality resources and innovative services to stimulate creativity and intellectual curiosity.</li>
+                    <li>Facilitate lifelong learning and research within the communities.</li>
+                    <li>Empower students with the information and research skills needed to achieve their highest academic potential and to thrive as lifelong learners.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 3. STATS -->
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="number">1,45,118<span>+</span></div>
+                <div class="label">Books Available</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">5000<span>+</span></div>
+                <div class="label">Active Members</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">450<span>+</span></div>
+                <div class="label">Seats Available</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">25<span>+</span></div>
+                <div class="label">Years of Service</div>
+            </div>
+        </div>
+
+        <!-- 4. CONTACT STRIP -->
+        <div class="card">
+            <div class="contact-strip">
+                <div class="left">
+                    <h3>Get in Touch</h3>
+                    <p>Click below to view location and contact details.</p>
+                </div>
+                <div class="contact-items">
+                    <button class="contact-chip" onclick="toggleBox('locationBox')">
+                        <span class="ci">📍</span> Location
+                    </button>
+                    <button class="contact-chip" onclick="toggleBox('contactBox')">
+                        <span class="ci">📞</span> Contact
+                    </button>
+                </div>
+                <div id="locationBox" class="info-box">
+                    <p><strong>📍 Location:</strong> RIT Campus, Islampur, Maharashtra</p>
+                    <p style="margin-top:6px;">
+                        <a href="https://www.google.com/maps?q=RIT+Campus+Islampur+Maharashtra" target="_blank" style="color:#0077b6;font-size:13px;">Open in Google Maps →</a>
+                    </p>
+                </div>
+                <div id="contactBox" class="info-box">
+                    <p><strong>📞 Phone:</strong> +91 9876543210</p>
+                    <p><strong>✉ Email:</strong> library@rit.edu</p>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /content-wrap -->
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-left">📚 Library</div>
+        <div class="footer-center">© 2026 RIT Central Library, Islampur. All rights reserved.</div>
+        <div id="footer-user"></div>
+    </footer>
+
+    <script src="nav-profile.js"></script>
+    <script>
+        function toggleBox(id) {
+            const box = document.getElementById(id);
+            const isVisible = box.classList.contains('visible');
+            document.querySelectorAll('.info-box').forEach(b => b.classList.remove('visible'));
+            if (!isVisible) box.classList.add('visible');
+        }
+    </script>
+</body>
+</html>

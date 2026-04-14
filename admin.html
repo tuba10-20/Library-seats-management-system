@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — Library</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(160deg, #03045e 0%, #023e8a 60%, #0077b6 100%);
+      min-height: 100vh;
+      color: #fff;
+    }
+    /* ── NAVBAR ── */
+    nav {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0 32px; height: 56px;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-left { display: flex; align-items: center; gap: 12px; }
+    .nav-icon {
+      width: 30px; height: 30px;
+      background: linear-gradient(135deg, #48cae4, #0096c7);
+      border-radius: 8px;
+      display: flex; align-items: center;
+      justify-content: center; font-size: 16px;
+    }
+    .nav-title { font-family: 'Playfair Display', serif; font-size: 17px; color: #fff; letter-spacing: 0.3px; }
+    .nav-title span { color: #48cae4; }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+    .admin-chip {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(72,202,228,0.12);
+      border: 1px solid rgba(72,202,228,0.2);
+      border-radius: 20px; padding: 5px 14px;
+    }
+    .admin-avatar {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: linear-gradient(135deg,#48cae4,#0077b6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+    }
+    .admin-name { font-size: 13px; color: #caf0f8; font-weight: 500; }
+    .logout-btn {
+      padding: 6px 16px; font-size: 12px; font-weight: 500;
+      background: rgba(230,57,70,0.15);
+      border: 1px solid rgba(230,57,70,0.3);
+      color: #ff8fa3; border-radius: 20px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+    }
+    .logout-btn:hover { background: rgba(230,57,70,0.25); color: #fff; }
+    /* ── LAYOUT ── */
+    .page { max-width: 1100px; margin: 0 auto; padding: 36px 24px 60px; }
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(22px, 3vw, 32px); color: #fff; margin-bottom: 6px;
+    }
+    .page-header h1 em { font-style: italic; color: #48cae4; }
+    .page-header p { font-size: 13.5px; color: rgba(255,255,255,0.5); }
+    /* ── STATS ROW ── */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 16px; margin-bottom: 32px;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 22px 24px;
+      backdrop-filter: blur(10px);
+    }
+    .stat-card .s-label {
+      font-size: 11px; font-weight: 500; letter-spacing: 2px;
+      text-transform: uppercase; color: rgba(255,255,255,0.45);
+      margin-bottom: 10px;
+    }
+    .stat-card .s-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px; color: #48cae4; line-height: 1;
+    }
+    /* ── TABS ── */
+    .tabs {
+      display: flex; gap: 4px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 12px; padding: 4px;
+      margin-bottom: 20px; width: fit-content;
+    }
+    .tab-btn {
+      padding: 8px 22px; font-size: 13px; font-weight: 500;
+      background: transparent; border: none; color: rgba(255,255,255,0.5);
+      border-radius: 9px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+    }
+    .tab-btn.active { background: rgba(72,202,228,0.18); color: #caf0f8; }
+    /* ── GLASS TABLE CONTAINER ── */
+    .table-wrap {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 18px; overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    /* ── TOOLBAR ── */
+    .toolbar {
+      display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap;
+      gap: 12px; padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .toolbar-left { font-size: 13px; color: rgba(255,255,255,0.5); }
+    .toolbar-left strong { color: #caf0f8; }
+    .refresh-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 16px; font-size: 12px; font-weight: 500;
+      background: rgba(72,202,228,0.12);
+      border: 1px solid rgba(72,202,228,0.2);
+      color: #48cae4; border-radius: 20px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+    }
+    .refresh-btn:hover { background: rgba(72,202,228,0.22); }
+    .refresh-icon { display: inline-block; transition: transform 0.4s; }
+    .refresh-icon.spin { transform: rotate(360deg); }
+    .search-input {
+      padding: 7px 14px; font-size: 13px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px; color: #fff; outline: none;
+      font-family: 'DM Sans', sans-serif; width: 200px;
+      transition: border-color 0.2s;
+    }
+    .search-input::placeholder { color: rgba(255,255,255,0.3); }
+    .search-input:focus { border-color: #48cae4; }
+    /* ── TABLE ── */
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: rgba(0,0,0,0.2); }
+    thead th {
+      padding: 12px 20px; text-align: left;
+      font-size: 11px; font-weight: 500; letter-spacing: 1.5px;
+      text-transform: uppercase; color: rgba(255,255,255,0.4);
+      white-space: nowrap;
+    }
+    tbody tr {
+      border-top: 1px solid rgba(255,255,255,0.05);
+      transition: background 0.15s;
+    }
+    tbody tr:hover { background: rgba(255,255,255,0.04); }
+    tbody td { padding: 14px 20px; font-size: 13.5px; color: rgba(255,255,255,0.85); vertical-align: middle; }
+    .prn-badge {
+      display: inline-block;
+      background: rgba(72,202,228,0.12);
+      border: 1px solid rgba(72,202,228,0.25);
+      color: #48cae4; font-size: 12px; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px;
+      font-family: monospace; letter-spacing: 0.5px;
+    }
+    .seat-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.08);
+      color: #caf0f8; font-size: 12px; font-weight: 500;
+      padding: 3px 10px; border-radius: 6px;
+      font-family: monospace;
+    }
+    .floor-dot {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: rgba(72,202,228,0.15);
+      color: #48cae4; font-size: 12px; font-weight: 700;
+    }
+    /* Time bar */
+    .time-cell { min-width: 140px; }
+    .time-bar-wrap {
+      height: 5px; background: rgba(255,255,255,0.1);
+      border-radius: 3px; overflow: hidden; margin-bottom: 4px;
+    }
+    .time-bar { height: 100%; border-radius: 3px; background: #48cae4; transition: width 1s linear; }
+    .time-bar.warn { background: #f4a261; }
+    .time-bar.urgent { background: #e63946; }
+    .time-text { font-size: 12px; color: rgba(255,255,255,0.5); font-variant-numeric: tabular-nums; }
+    /* Cancel btn */
+    .cancel-btn {
+      padding: 5px 14px; font-size: 12px; font-weight: 500;
+      background: rgba(230,57,70,0.1);
+      border: 1px solid rgba(230,57,70,0.3);
+      color: #e63946; border-radius: 14px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+    }
+    .cancel-btn:hover { background: rgba(230,57,70,0.22); color: #fff; }
+    /* Empty state */
+    .empty-state {
+      padding: 56px 20px; text-align: center;
+      color: rgba(255,255,255,0.3); font-size: 14px;
+    }
+    .empty-state .e-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.5; }
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .modal-overlay.visible { opacity: 1; pointer-events: all; }
+    .modal {
+      background: #03045e; border: 1px solid rgba(72,202,228,0.2);
+      border-radius: 18px; padding: 2rem; max-width: 360px; width: 90%;
+      text-align: center;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      transform: translateY(14px); transition: transform 0.2s;
+    }
+    .modal-overlay.visible .modal { transform: translateY(0); }
+    .modal-icon { font-size: 28px; margin-bottom: 12px; }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 18px; color: #caf0f8; margin-bottom: 8px; }
+    .modal-sub { font-size: 13px; color: rgba(202,240,248,0.6); margin-bottom: 1.5rem; line-height: 1.6; }
+    .modal-sub strong { color: #48cae4; }
+    .modal-btns { display: flex; gap: 10px; justify-content: center; }
+    .modal-keep {
+      padding: 9px 22px; font-size: 13px; font-weight: 500;
+      background: rgba(255,255,255,0.1); color: #caf0f8;
+      border: 1px solid rgba(255,255,255,0.15); border-radius: 20px;
+      cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+    }
+    .modal-keep:hover { background: rgba(255,255,255,0.18); }
+    .modal-confirm {
+      padding: 9px 22px; font-size: 13px; font-weight: 500;
+      background: rgba(230,57,70,0.15); color: #e63946;
+      border: 1px solid rgba(230,57,70,0.35); border-radius: 20px;
+      cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+    }
+    .modal-confirm:hover { background: rgba(230,57,70,0.28); color: #fff; }
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      nav { padding: 0 16px; }
+      .page { padding: 24px 16px 48px; }
+      thead th:nth-child(4), tbody td:nth-child(4) { display: none; }
+      .admin-name { display: none; }
+    }
+    @media (max-width: 480px) {
+      .stats-row { grid-template-columns: 1fr; }
+      .tabs { width: 100%; }
+      .tab-btn { flex: 1; text-align: center; }
+      .search-input { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-left">
+      <div class="nav-icon">📚</div>
+      <div class="nav-title">Library <span>Admin</span></div>
+    </div>
+    <div class="nav-right">
+      <div class="admin-chip">
+        <div class="admin-avatar" id="admin-avatar">A</div>
+        <span class="admin-name" id="admin-name">Admin</span>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">Sign out</button>
+    </div>
+  </nav>
+
+  <!-- PAGE -->
+  <div class="page">
+    <div class="page-header">
+      <h1>Dashboard — <em>Active Bookings</em></h1>
+      <p>Live view of all currently occupied seats. Auto-refreshes every 30 seconds.</p>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="s-label">Active Bookings</div>
+        <div class="s-value" id="stat-bookings">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Floor 1 Occupied</div>
+        <div class="s-value" id="stat-f1">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Floor 2 Occupied</div>
+        <div class="s-value" id="stat-f2">—</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('bookings')">Active Bookings</button>
+      <button class="tab-btn" onclick="switchTab('students')">Registered Students</button>
+    </div>
+
+    <!-- BOOKINGS TAB -->
+    <div id="tab-bookings">
+      <div class="table-wrap">
+        <div class="toolbar">
+          <div class="toolbar-left">Showing <strong id="booking-count">0</strong> active bookings</div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <input class="search-input" id="booking-search" placeholder="Search by PRN or name..." oninput="filterBookings()" />
+            <button class="refresh-btn" onclick="refreshAll()">
+              <span class="refresh-icon" id="refresh-icon">↻</span> Refresh
+            </button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>PRN</th>
+                <th>Student Name</th>
+                <th>Seat</th>
+                <th>Floor</th>
+                <th>Time Remaining</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="bookings-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- STUDENTS TAB -->
+    <div id="tab-students" style="display:none;">
+      <div class="table-wrap">
+        <div class="toolbar">
+          <div class="toolbar-left">Total <strong id="student-count">0</strong> registered PRNs</div>
+          <input class="search-input" id="student-search" placeholder="Search by PRN or name..." oninput="filterStudents()" />
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>PRN</th>
+                <th>Name</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody id="students-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CANCEL MODAL -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="modal-icon">🪑</div>
+      <div class="modal-title">Force Cancel Booking?</div>
+      <div class="modal-sub">
+        Seat <strong id="modal-seat"></strong> booked by PRN <strong id="modal-prn"></strong>
+        will be freed immediately.
+      </div>
+      <div class="modal-btns">
+        <button class="modal-keep" onclick="closeModal()">Keep it</button>
+        <button class="modal-confirm" onclick="doForceCancel()">Yes, cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ADMIN_API = "http://localhost:5000/api";
+    let allBookings = [];
+    let allStudents = [];
+    let pendingCancelId = null;
+    let tickInterval   = null;
+
+    // ── AUTH CHECK ──
+    const adminRaw = localStorage.getItem("adminUser");
+    if (!adminRaw) { window.location.href = "admin-login.html"; }
+    const adminUser  = JSON.parse(adminRaw);
+    const adminToken = localStorage.getItem("adminToken") || "";
+
+    function adminHeaders() {
+      return { "Content-Type": "application/json", "Authorization": `Bearer ${adminToken}` };
+    }
+
+    document.getElementById("admin-name").textContent   = adminUser.name || adminUser.username;
+    document.getElementById("admin-avatar").textContent = (adminUser.name || "A")[0].toUpperCase();
+
+    // ── LOGOUT ──
+    async function doLogout() {
+      try {
+        await fetch(`${ADMIN_API}/admin/logout`, {
+          method: "POST", credentials: "include",
+          headers: adminHeaders()
+        });
+      } catch (_) {}
+      localStorage.removeItem("adminUser");
+      localStorage.removeItem("adminToken");
+      window.location.href = "admin-login.html";
+    }
+
+    // ── TABS ──
+    function switchTab(tab) {
+      document.getElementById("tab-bookings").style.display = tab === "bookings" ? "block" : "none";
+      document.getElementById("tab-students").style.display = tab === "students" ? "block" : "none";
+      document.querySelectorAll(".tab-btn").forEach((b, i) =>
+        b.classList.toggle("active", (i === 0 && tab === "bookings") || (i === 1 && tab === "students"))
+      );
+      if (tab === "students" && allStudents.length === 0) loadStudents();
+    }
+
+    // ── LOAD BOOKINGS ──
+    async function loadBookings() {
+      try {
+        const res  = await fetch(`${ADMIN_API}/admin/bookings`, { credentials: "include", headers: adminHeaders() });
+        const data = await res.json();
+        if (!data.ok) { handleAuthError(); return; }
+        allBookings = data.bookings;
+        updateStats();
+        renderBookings(allBookings);
+        startTick();
+      } catch (_) {
+        document.getElementById("bookings-tbody").innerHTML =
+          `<tr><td colspan="6"><div class="empty-state"><div class="e-icon">⚠️</div>Cannot reach backend. Is the server running?</div></td></tr>`;
+      }
+    }
+
+    function updateStats() {
+      const now    = Date.now();
+      const active = allBookings.filter(b => b.end_time > now);
+      document.getElementById("stat-bookings").textContent = active.length;
+      document.getElementById("stat-f1").textContent = active.filter(b => b.floor === 1).length;
+      document.getElementById("stat-f2").textContent = active.filter(b => b.floor === 2).length;
+    }
+
+    function renderBookings(list) {
+      const tbody  = document.getElementById("bookings-tbody");
+      const now    = Date.now();
+      const active = list.filter(b => b.end_time > now);
+      document.getElementById("booking-count").textContent = active.length;
+
+      if (!active.length) {
+        tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="e-icon">✅</div>No active bookings right now.</div></td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = active.map(b => {
+        const remaining = Math.max(0, b.end_time - now);
+        const totalMs   = b.end_time - b.start_time;
+        const pct       = (remaining / totalMs) * 100;
+        const mins      = Math.floor(remaining / 60000);
+        const secs      = Math.floor((remaining % 60000) / 1000);
+        const barClass  = pct > 40 ? "" : pct > 15 ? "warn" : "urgent";
+
+        return `<tr>
+          <td><span class="prn-badge">${b.prn}</span></td>
+          <td>${b.name}</td>
+          <td><span class="seat-badge">${b.seat_id}</span></td>
+          <td><span class="floor-dot">${b.floor}</span></td>
+          <td class="time-cell">
+            <div class="time-bar-wrap"><div class="time-bar ${barClass}" id="bar-${b.id}" style="width:${pct.toFixed(1)}%"></div></div>
+            <div class="time-text" id="time-${b.id}">${mins}:${secs.toString().padStart(2,"0")}</div>
+          </td>
+          <td><button class="cancel-btn" onclick="openCancelModal(${b.id},'${b.seat_id}','${b.prn}')">Cancel</button></td>
+        </tr>`;
+      }).join("");
+    }
+
+    function startTick() {
+      if (tickInterval) clearInterval(tickInterval);
+      tickInterval = setInterval(() => {
+        const now = Date.now();
+        allBookings.forEach(b => {
+          const remaining = Math.max(0, b.end_time - now);
+          const totalMs   = b.end_time - b.start_time;
+          const pct       = (remaining / totalMs) * 100;
+          const mins      = Math.floor(remaining / 60000);
+          const secs      = Math.floor((remaining % 60000) / 1000);
+          const barEl     = document.getElementById(`bar-${b.id}`);
+          const timeEl    = document.getElementById(`time-${b.id}`);
+          if (barEl) {
+            barEl.style.width = pct.toFixed(1) + "%";
+            barEl.className   = "time-bar" + (pct > 40 ? "" : pct > 15 ? " warn" : " urgent");
+          }
+          if (timeEl) timeEl.textContent = `${mins}:${secs.toString().padStart(2,"0")}`;
+        });
+        updateStats();
+      }, 1000);
+    }
+
+    function filterBookings() {
+      const q = document.getElementById("booking-search").value.toLowerCase();
+      renderBookings(allBookings.filter(b =>
+        b.prn.includes(q) || b.name.toLowerCase().includes(q) || b.seat_id.toLowerCase().includes(q)
+      ));
+    }
+
+    // ── LOAD STUDENTS ──
+    async function loadStudents() {
+      try {
+        const res  = await fetch(`${ADMIN_API}/admin/all-students`, { credentials: "include", headers: adminHeaders() });
+        const data = await res.json();
+        if (!data.ok) { handleAuthError(); return; }
+        allStudents = data.students;
+        renderStudents(allStudents);
+      } catch (_) {}
+    }
+
+    function renderStudents(list) {
+      const tbody = document.getElementById("students-tbody");
+      document.getElementById("student-count").textContent = list.length;
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="3"><div class="empty-state"><div class="e-icon">👤</div>No students registered yet.</div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list.map(s => `
+        <tr>
+          <td><span class="prn-badge">${s.prn}</span></td>
+          <td>${s.name}</td>
+          <td style="color:rgba(255,255,255,0.5);font-size:13px;">${s.email || "—"}</td>
+        </tr>`).join("");
+    }
+
+    function filterStudents() {
+      const q = document.getElementById("student-search").value.toLowerCase();
+      renderStudents(allStudents.filter(s =>
+        s.prn.includes(q) || s.name.toLowerCase().includes(q)
+      ));
+    }
+
+    // ── CANCEL ──
+    function openCancelModal(id, seat, prn) {
+      pendingCancelId = id;
+      document.getElementById("modal-seat").textContent = seat;
+      document.getElementById("modal-prn").textContent  = prn;
+      document.getElementById("modal").classList.add("visible");
+    }
+
+    function closeModal() {
+      pendingCancelId = null;
+      document.getElementById("modal").classList.remove("visible");
+    }
+
+    async function doForceCancel() {
+      if (!pendingCancelId) return;
+      try {
+        const res  = await fetch(`${ADMIN_API}/admin/force-cancel`, {
+          method: "POST",
+          headers: adminHeaders(),
+          credentials: "include",
+          body: JSON.stringify({ booking_id: pendingCancelId })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          allBookings = allBookings.filter(b => b.id !== pendingCancelId);
+          renderBookings(allBookings);
+          updateStats();
+        }
+      } catch (_) {}
+      closeModal();
+    }
+
+    document.getElementById("modal").addEventListener("click", e => {
+      if (e.target.id === "modal") closeModal();
+    });
+
+    // ── REFRESH ──
+    async function refreshAll() {
+      const icon = document.getElementById("refresh-icon");
+      icon.classList.add("spin");
+      await loadBookings();
+      setTimeout(() => icon.classList.remove("spin"), 400);
+    }
+
+    function handleAuthError() {
+      localStorage.removeItem("adminUser");
+      window.location.href = "admin-login.html";
+    }
+
+    // ── INIT ──
+    loadBookings();
+    setInterval(loadBookings, 30000);   // auto-refresh every 30s
+  </script>
+</body>
+</html>

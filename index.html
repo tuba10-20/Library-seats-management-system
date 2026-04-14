@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Library — Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nav-profile.css" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: linear-gradient(160deg, #caf0f8 0%, #90e0ef 60%, #48cae4 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  /* ── NAVBAR ── */
+  nav {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 54px;
+    background: rgba(3, 4, 94, 0.93);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 20px rgba(3,4,94,0.35);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .logo-wrap {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; flex-shrink: 0;
+  }
+  .logo-icon {
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, #48cae4, #90e0ef);
+    border-radius: 6px; display: flex; align-items: center;
+    justify-content: center; font-size: 15px; transition: transform 0.3s;
+  }
+  .logo-wrap:hover .logo-icon { transform: rotate(-8deg) scale(1.1); }
+  .logo-text { font-family: 'Playfair Display', serif; font-size: 18px; color: #fff; letter-spacing: 0.5px; }
+  .logo-text span { color: #48cae4; }
+  nav ul { list-style: none; display: flex; align-items: center; gap: 4px; }
+  nav ul li a {
+    display: inline-block; text-decoration: none;
+    color: rgba(255,255,255,0.75); font-size: 13.5px; font-weight: 400;
+    padding: 6px 14px; border-radius: 20px; transition: all 0.25s;
+  }
+  nav ul li a:hover { color: #fff; background: rgba(72,202,228,0.18); }
+  nav ul li a.cta {
+    color: #03045e; background: linear-gradient(135deg, #48cae4, #90e0ef);
+    font-weight: 600; padding: 6px 18px;
+  }
+  nav ul li a.cta:hover {
+    background: linear-gradient(135deg, #90e0ef, #caf0f8);
+    transform: translateY(-1px); box-shadow: 0 4px 14px rgba(72,202,228,0.4);
+  }
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 56px 24px 40px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 5vw, 54px);
+    color: #03045e;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { font-style: italic; color: #0077b6; }
+  .hero-sub {
+    font-size: clamp(14px, 1.8vw, 17px);
+    color: #023e8a; opacity: 0.85;
+    max-width: 540px; margin: 0 auto 30px;
+    line-height: 1.8;
+  }
+  .hero-cta {
+    display: inline-block;
+    padding: 13px 34px;
+    background: linear-gradient(135deg, #03045e, #0077b6);
+    color: #caf0f8; border-radius: 30px;
+    text-decoration: none; font-weight: 600;
+    font-size: 14px; letter-spacing: 0.4px;
+    box-shadow: 0 6px 20px rgba(3,4,94,0.3);
+    transition: all 0.25s;
+  }
+  .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(3,4,94,0.4); }
+  /* ── SLIDER ── */
+  .slider-section { padding: 0 32px 44px; }
+  .slider-wrap { width: 100%; max-width: 900px; margin: 0 auto; }
+  .slider {
+    width: 100%;
+    aspect-ratio: 16 / 7;
+    position: relative;
+    overflow: hidden;
+    border-radius: 22px;
+    box-shadow: 0 12px 48px rgba(3,4,94,0.25);
+    background: rgba(3,4,94,0.12);
+  }
+  .slide {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+  .slide.active { opacity: 1; }
+  .slider-counter {
+    position: absolute; bottom: 14px; right: 16px;
+    background: rgba(3,4,94,0.55);
+    backdrop-filter: blur(8px);
+    color: #caf0f8; font-size: 12px; font-weight: 500;
+    padding: 4px 12px; border-radius: 20px;
+    z-index: 2; letter-spacing: 1px;
+  }
+  .slider-dots {
+    display: flex; justify-content: center;
+    gap: 8px; margin-top: 14px;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(3,4,94,0.2);
+    border: none; cursor: pointer; padding: 0;
+    transition: all 0.3s;
+  }
+  .dot.active { background: #0077b6; transform: scale(1.4); }
+  /* ── FEATURES ── */
+  .features-section { padding: 0 32px 64px; }
+  .features-title {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(20px, 3vw, 30px);
+    color: #03045e; margin-bottom: 28px;
+  }
+  .features-title em { font-style: italic; color: #0077b6; }
+  .features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .card {
+    background: rgba(255,255,255,0.62);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.82);
+    padding: 28px 22px;
+    border-radius: 18px;
+    box-shadow: 0 6px 24px rgba(3,4,94,0.1);
+    text-align: center;
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .card:hover { transform: translateY(-7px); box-shadow: 0 16px 40px rgba(3,4,94,0.16); }
+  .card .card-icon { font-size: 32px; margin-bottom: 12px; }
+  .card h3 { color: #03045e; font-size: 16px; margin-bottom: 8px; font-weight: 600; }
+  .card p { font-size: 13.5px; color: #2d3e6b; line-height: 1.65; }
+  .card a { color: #0077b6; font-weight: 600; text-decoration: none; }
+  .card a:hover { text-decoration: underline; }
+  /* ── FOOTER ── */
+  footer {
+    background: rgba(3,4,94,0.93);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.7);
+    padding: 20px 32px;
+    display: flex; align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap; gap: 14px; font-size: 13px;
+    margin-top: auto;
+  }
+  .footer-left { font-family: 'Playfair Display', serif; color: #48cae4; font-size: 15px; }
+  .footer-center { opacity: 0.6; }
+  .footer-profile { display: flex; align-items: center; gap: 10px; }
+  .profile-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg,#48cae4,#0077b6);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff; text-transform: uppercase;
+  }
+  .profile-name { color: #caf0f8; font-weight: 500; }
+  .profile-role { color: rgba(202,240,248,0.5); font-size: 12px; }
+  .login-prompt a { color: #48cae4; text-decoration: none; font-weight: 500; }
+  .login-prompt a:hover { text-decoration: underline; }
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .features { grid-template-columns: 1fr 1fr; }
+    .slider-section, .features-section { padding-left: 20px; padding-right: 20px; }
+    .hero { padding: 40px 20px 28px; }
+  }
+  @media (max-width: 480px) {
+    nav { padding: 0 16px; }
+    .features { grid-template-columns: 1fr; }
+    footer { flex-direction: column; align-items: flex-start; gap: 10px; }
+    footer .footer-center { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+  <nav>
+    <a class="logo-wrap" href="index.html">
+      <div class="logo-icon">📚</div>
+      <span class="logo-text">Li<span>brary</span></span>
+    </a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="aboutUs.html">About Us</a></li>
+      <li><a href="booking.html" class="cta">Book a Seat</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <h1>Welcome to Our <em>Library</em></h1>
+    <p class="hero-sub">
+      A peaceful and modern space for learning, research, and focused study —
+      with comfortable seating, digital access, and all the resources you need.
+    </p>
+    <a href="booking.html" class="hero-cta">Reserve a Seat →</a>
+  </section>
+
+  <section class="slider-section">
+    <div class="slider-wrap">
+      <div class="slider" id="slider">
+        <!-- Add your library image filenames below -->
+        <img class="slide active" src="images/slide1.jpeg" alt="Library reading hall"
+             onerror="this.style.background='linear-gradient(135deg,#03045e,#0096c7)';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';" />
+        <img class="slide" src="images/slide2.jpeg" alt="Study area"
+             onerror="this.style.background='linear-gradient(135deg,#0077b6,#48cae4)';" />
+        <img class="slide" src="images/slide3.jpeg" alt="Seating section"
+             onerror="this.style.background='linear-gradient(135deg,#023e8a,#0096c7)';" />
+        <img class="slide" src="images/slide4.jpeg" alt="Research zone"
+             onerror="this.style.background='linear-gradient(135deg,#03045e,#0077b6)';" />
+        <div class="slider-counter" id="counter">1 / 4</div>
+      </div>
+      <div class="slider-dots" id="dots"></div>
+    </div>
+  </section>
+
+  <section class="features-section">
+    <h2 class="features-title">What we <em>offer</em></h2>
+    <div class="features">
+      <div class="card"><div class="card-icon">❄️</div><h3>AC Facility</h3><p>Fully air-conditioned space for comfortable studying year-round.</p></div>
+      <div class="card"><div class="card-icon">💻</div><h3>PC Access</h3><p>Computers available for research and online study resources.</p></div>
+      <div class="card"><div class="card-icon">🤫</div><h3>Quiet Zone</h3><p>Separate silent section for PhD students and deep-focus work.</p></div>
+      <div class="card"><div class="card-icon">📚</div><h3>Book Collection</h3><p>1,45,118+ volumes across engineering, management, and more.</p></div>
+      <div class="card"><div class="card-icon">🌐</div><h3>Digital Access</h3><p>IEEE, ScienceDirect, e-books, and online resources anytime.</p></div>
+      <div class="card"><div class="card-icon">🪑</div><h3>Seat Booking</h3><p>Reserve your study seat in advance — <a href="booking.html">book now →</a></p></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-left">📚 Library</div>
+    <div class="footer-center">© 2026 RIT Central Library, Islampur. All rights reserved.</div>
+    <div id="footer-user"></div>
+  </footer>
+
+  <script>
+    const slides  = document.querySelectorAll(".slider .slide");
+    const dotsEl  = document.getElementById("dots");
+    const counter = document.getElementById("counter");
+    let current = 0;
+
+    // Only add dots for actual slides (not counter div)
+    const slideEls = Array.from(document.querySelectorAll(".slider .slide"));
+    slideEls.forEach((_, i) => {
+      const d = document.createElement("button");
+      d.className = "dot" + (i === 0 ? " active" : "");
+      d.setAttribute("aria-label", "Go to slide " + (i + 1));
+      d.onclick = () => goTo(i);
+      dotsEl.appendChild(d);
+    });
+
+    function goTo(n) {
+      slideEls[current].classList.remove("active");
+      dotsEl.children[current].classList.remove("active");
+      current = (n + slideEls.length) % slideEls.length;
+      slideEls[current].classList.add("active");
+      dotsEl.children[current].classList.add("active");
+      counter.textContent = (current + 1) + " / " + slideEls.length;
+    }
+
+    setInterval(() => goTo(current + 1), 3500);
+  </script>
+
+  <script src="nav-profile.js"></script>
+</body>
+</html>
